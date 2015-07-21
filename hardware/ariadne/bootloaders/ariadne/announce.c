@@ -17,8 +17,10 @@
  #include "w5500.h"
 #elif defined(W5200)
  #include "w5200.h"
-#else
+#elif defined(W5100)
  #include "w5100.h"
+#else
+ #error No WIZnet version selected
 #endif
 
 #include	"debug.h"

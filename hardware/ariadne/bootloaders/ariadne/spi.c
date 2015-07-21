@@ -51,7 +51,7 @@ void spiWriteReg(uint16_t address, uint8_t cb, uint8_t value)
 	SPDR = cb;  //Socket 3 BSB Write 0x6D Selects Socket 3 Register, write mode, 1 byte data length
 	while(!(SPSR & _BV(SPIF)));
 
-#else //Standard W5100 Code
+#elif defined(W5100)
 
 	SPDR = SPI_WRITE;
 	while(!(SPSR & _BV(SPIF)));
@@ -62,6 +62,10 @@ void spiWriteReg(uint16_t address, uint8_t cb, uint8_t value)
 	SPDR = address & 0xff;
 	while(!(SPSR & _BV(SPIF)));
 
+#else
+
+	#error No WIZnet version selected
+	
 #endif
 
 	SPDR = value;
