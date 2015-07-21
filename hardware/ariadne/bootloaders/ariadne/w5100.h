@@ -1,3 +1,4 @@
+#if defined(W5100)
 #ifndef w5100_h
 #define w5100_h
 
@@ -290,4 +291,5 @@
 
 void netInit(void);
 
+#endif
 #endif

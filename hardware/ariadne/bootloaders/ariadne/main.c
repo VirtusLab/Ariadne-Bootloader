@@ -14,7 +14,15 @@
 
 #include "util.h"
 #include "spi.h"
-#include "w5100.h"
+
+#if defined(W5500)
+ #include "w5500.h"
+#elif defined(W5200)
+ #include "w5200.h"
+#else
+ #include "w5100.h"
+#endif
+
 #include "tftp.h"
 #include "serial.h"
 #include "neteeprom.h"
