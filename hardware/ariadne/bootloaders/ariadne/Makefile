@@ -112,7 +112,7 @@ STK500-1 = $(STK500) -e -d$(MCU_TARGET) -pf -vf -if$(PROGRAM)_$(TARGET).hex \
 	   -lFF -LFF -f$(HFUSE)$(LFUSE) -EF8 -ms -q -cUSB -I200kHz -s -wt
 STK500-2 = $(STK500) -d$(MCU_TARGET) -ms -q -lCF -LCF -cUSB -I200kHz -s -wt
 
-OBJ      = main.o spi.o w5100.o tftp.o validate.o debug.o watchdog.o serial.o util.o announce.o optiboot.o stk500boot.o
+OBJ      = main.o spi.o w5100.o w5200.o w5500.o tftp.o validate.o debug.o watchdog.o serial.o util.o announce.o optiboot.o stk500boot.o
 OPTIMIZE = -Os -fno-inline-small-functions -fno-split-wide-types -mno-interrupts -mrelax
 OPTIMIZE += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fno-jump-tables -std=gnu99 #-save-temps
 
@@ -170,16 +170,6 @@ debug2560_isp: HFUSE = D0
 # 2.7V brownout
 debug2560_isp: EFUSE = FD
 debug2560_isp: isp
-
-# Build with the debug messages enabled
-# Use it only if you have already seen the source code
-debug32u4: TARGET = debug32u4
-debug32u4: MCU_TARGET = atmega32u4
-debug32u4: CFLAGS += '-DDEBUG_MAIN=1' '-DDEBUG_NET=1' '-DDEBUG_TFTP=1' '-DBAUD_RATE=115200'
-debug32u4: AVR_FREQ = 16000000L
-debug32u4: LDSECTIONS = -Wl,--section-start=.text=0x7000 #-Wl,--section-start=.version=0x7ffe
-debug32u4: $(PROGRAM)_debug32u4.hex
-debug32u4: $(PROGRAM)_debug32u4.lst
 
 #
 #
@@ -258,28 +248,69 @@ debug32u4: $(PROGRAM)_debug32u4.lst
 
 
 # Atmega328 used on Arduino UNO and Arduino Ethernet
-atmega328: EXT_OBJ = optiboot.o
-atmega328: TARGET = atmega328
-atmega328: MCU_TARGET = atmega328p
-atmega328: CFLAGS += '-DBAUD_RATE=115200'
-atmega328: AVR_FREQ = 16000000L
-atmega328: LDSECTIONS  = -Wl,--section-start=.text=0x7000 #-Wl,--section-start=.version=0x7ffe
-atmega328: $(PROGRAM)_atmega328.hex
-atmega328: $(PROGRAM)_atmega328.lst
-atmega328_isp: atmega328
-atmega328_isp: TARGET = atmega328
-atmega328_isp: MCU_TARGET = atmega328p
+atmega328_w5100: EXT_OBJ = optiboot.o
+atmega328_w5100: TARGET = atmega328_w5100
+atmega328_w5100: MCU_TARGET = atmega328p
+atmega328_w5100: CFLAGS += '-DBAUD_RATE=115200' '-DW5100'
+atmega328_w5100: AVR_FREQ = 16000000L
+atmega328_w5100: LDSECTIONS  = -Wl,--section-start=.text=0x7000 #-Wl,--section-start=.version=0x7ffe
+atmega328_w5100: $(PROGRAM)_atmega328_w5100.hex
+atmega328_w5100: $(PROGRAM)_atmega328_w5100.lst
+atmega328_w5100_isp: atmega328_w5100
+atmega328_w5100_isp: TARGET = atmega328_w5100
+atmega328_w5100_isp: MCU_TARGET = atmega328p
 # Low power xtal (16MHz) 16KCK/14CK+65ms
-atmega328_isp: LFUSE = FF
+atmega328_w5100_isp: LFUSE = FF
 # 4096 byte boot, SPIEN
-atmega328_isp: HFUSE = D8
+atmega328_w5100_isp: HFUSE = D8
 # 2.7V brownout
-atmega328_isp: EFUSE = 05
-atmega328_isp: isp
+atmega328_w5100_isp: EFUSE = 05
+atmega328_w5100_isp: isp
+
+# Atmega328 used on Arduino UNO and Arduino Ethernet
+atmega328_w5200: EXT_OBJ = optiboot.o
+atmega328_w5200: TARGET = atmega328_w5200
+atmega328_w5200: MCU_TARGET = atmega328p
+atmega328_w5200: CFLAGS += '-DBAUD_RATE=115200' '-DW5200'
+atmega328_w5200: AVR_FREQ = 16000000L
+atmega328_w5200: LDSECTIONS  = -Wl,--section-start=.text=0x7000 #-Wl,--section-start=.version=0x7ffe
+atmega328_w5200: $(PROGRAM)_atmega328_w5200.hex
+atmega328_w5200: $(PROGRAM)_atmega328_w5200.lst
+atmega328_w5200_isp: atmega328_w5200
+atmega328_w5200_isp: TARGET = atmega328_w5200
+atmega328_w5200_isp: MCU_TARGET = atmega328p
+# Low power xtal (16MHz) 16KCK/14CK+65ms
+atmega328_w5200_isp: LFUSE = FF
+# 4096 byte boot, SPIEN
+atmega328_w5200_isp: HFUSE = D8
+# 2.7V brownout
+atmega328_w5200_isp: EFUSE = 05
+atmega328_w5200_isp: isp
+
+# Atmega328 used on Arduino UNO and Arduino Ethernet
+atmega328_w5500: EXT_OBJ = optiboot.o
+atmega328_w5500: TARGET = atmega328_w5500
+atmega328_w5500: MCU_TARGET = atmega328p
+atmega328_w5500: CFLAGS += '-DBAUD_RATE=115200' '-DW5500'
+atmega328_w5500: AVR_FREQ = 16000000L
+atmega328_w5500: LDSECTIONS  = -Wl,--section-start=.text=0x7000 #-Wl,--section-start=.version=0x7ffe
+atmega328_w5500: $(PROGRAM)_atmega328_w5500.hex
+atmega328_w5500: $(PROGRAM)_atmega328_w5500.lst
+atmega328_w5500_isp: atmega328_w5500
+atmega328_w5500_isp: TARGET = atmega328_w5500
+atmega328_w5500_isp: MCU_TARGET = atmega328p
+# Low power xtal (16MHz) 16KCK/14CK+65ms
+atmega328_w5500_isp: LFUSE = FF
+# 4096 byte boot, SPIEN
+atmega328_w5500_isp: HFUSE = D8
+# 2.7V brownout
+atmega328_w5500_isp: EFUSE = 05
+atmega328_w5500_isp: isp
+
 
 atmega328_ethernet: TARGET = atmega328_ethernet
 atmega328_ethernet: MCU_TARGET = atmega328p
-atmega328_ethernet: CFLAGS += '-DARDUINO_ETHERNET' '-DBAUD_RATE=115200'
+atmega328_ethernet: CFLAGS += '-DARDUINO_ETHERNET' '-DBAUD_RATE=115200' '-DW5100'
 atmega328_ethernet: AVR_FREQ = 16000000L
 atmega328_ethernet: LDSECTIONS  = -Wl,--section-start=.text=0x7000 #-Wl,--section-start=.version=0x7ffe
 atmega328_ethernet: $(PROGRAM)_atmega328_ethernet.hex
@@ -295,7 +326,84 @@ atmega328_ethernet_isp: HFUSE = D8
 atmega328_ethernet_isp: EFUSE = 05
 atmega328_ethernet_isp: isp
 
+atmega1284_w5100: TARGET = atmega1284_w5100
+atmega1284_w5100: MCU_TARGET = atmega1284p
+atmega1284_w5100: CFLAGS += '-DBAUD_RATE=115200'
+atmega1284_w5100: AVR_FREQ = 16000000L
+atmega1284_w5100: LDSECTIONS  = -Wl,--section-start=.text=0x1f000
+atmega1284_w5100: $(PROGRAM)_atmega1284_w5100.hex
+atmega1284_w5100: $(PROGRAM)_atmega1284_w5100.lst
 
+atmega1284_w5100_isp: atmega1284_w5100
+atmega1284_w5100_isp: TARGET = atmega1284_w5100
+atmega1284_w5100_isp: MCU_TARGET = atmega1284p
+# 4096 word boot
+atmega1284_w5100_isp: HFUSE = D8
+# External power xtal (16MHz) 16KCK/14CK+65ms
+atmega1284_w5100_isp: LFUSE = FF
+# 2.7V brownout
+atmega1284_w5100_isp: EFUSE = FD
+atmega1284_w5100_isp: isp
+
+atmega1284_w5200: TARGET = atmega1284_w5200
+atmega1284_w5200: MCU_TARGET = atmega1284p
+atmega1284_w5200: CFLAGS += '-DBAUD_RATE=115200' '-DW5200'
+atmega1284_w5200: AVR_FREQ = 16000000L
+atmega1284_w5200: LDSECTIONS  = -Wl,--section-start=.text=0x1f000
+atmega1284_w5200: $(PROGRAM)_atmega1284_w5200.hex
+atmega1284_w5200: $(PROGRAM)_atmega1284_w5200.lst
+
+atmega1284_w5200_isp: atmega1284_w5200
+atmega1284_w5200_isp: TARGET = atmega1284_w5200
+atmega1284_w5200_isp: MCU_TARGET = atmega1284p
+# 4096 word boot
+atmega1284_w5200_isp: HFUSE = D8
+# External power xtal (16MHz) 16KCK/14CK+65ms
+atmega1284_w5200_isp: LFUSE = FF
+# 2.7V brownout
+atmega1284_w5200_isp: EFUSE = FD
+atmega1284_w5200_isp: isp
+
+
+
+atmega1284_w5500: TARGET = atmega1284_w5500
+atmega1284_w5500: MCU_TARGET = atmega1284p
+atmega1284_w5500: CFLAGS += '-DBAUD_RATE=115200' '-DW5500'
+atmega1284_w5500: AVR_FREQ = 16000000L
+atmega1284_w5500: LDSECTIONS  = -Wl,--section-start=.text=0x1f000
+atmega1284_w5500: $(PROGRAM)_atmega1284_w5500.hex
+atmega1284_w5500: $(PROGRAM)_atmega1284_w5500.lst
+
+atmega1284_w5500_isp: atmega1284_w5500
+atmega1284_w5500_isp: TARGET = atmega1284_w5500
+atmega1284_w5500_isp: MCU_TARGET = atmega1284p
+# 4096 word boot
+atmega1284_w5500_isp: HFUSE = D8
+# External power xtal (16MHz) 16KCK/14CK+65ms
+atmega1284_w5500_isp: LFUSE = FF
+# 2.7V brownout
+atmega1284_w5500_isp: EFUSE = FD
+atmega1284_w5500_isp: isp
+
+
+debug1284_w5100: TARGET = debug1284_w5100
+debug1284_w5100: MCU_TARGET = atmega1284p
+debug1284_w5100: CFLAGS += '-DDEBUG_MAIN=1' '-DBAUD_RATE=115200' '-DW5100'
+debug1284_w5100: AVR_FREQ = 16000000L
+debug1284_w5100: LDSECTIONS  = -Wl,--section-start=.text=0x1f000
+debug1284_w5100: $(PROGRAM)_debug1284_w5100.hex
+debug1284_w5100: $(PROGRAM)_debug1284_w5100.lst
+
+debug1284_w5100_isp: debug1284_w5100
+debug1284_w5100_isp: TARGET = debug1284_w5100
+debug1284_w5100_isp: MCU_TARGET = atmega1284p
+# 4096 word boot
+debug1284_w5100_isp: HFUSE = D8
+# External power xtal (16MHz) 16KCK/14CK+65ms
+debug1284_w5100_isp: LFUSE = FF
+# 2.7V brownout
+debug1284_w5100_isp: EFUSE = FD
+debug1284_w5100_isp: isp
 # # Sanguino has a minimum boot size of 1024 bytes, so enable extra functions
 # sanguino: TARGET = atmega644p
 # sanguino: MCU_TARGET = atmega644p
@@ -337,23 +445,61 @@ atmega328_ethernet_isp: isp
 #
 #
 # Mega has a minimum boot size of 1024 bytes
-atmega2560: TARGET = atmega2560
-atmega2560: MCU_TARGET = atmega2560
-atmega2560: CFLAGS += '-DBAUD_RATE=115200'
-atmega2560: AVR_FREQ = 16000000L
-atmega2560: LDSECTIONS  = -Wl,--section-start=.text=0x3e000
-atmega2560: $(PROGRAM)_atmega2560.hex
-atmega2560: $(PROGRAM)_atmega2560.lst
-atmega2560_isp: atmega2560
-atmega2560_isp: TARGET = atmega2560
-atmega2560_isp: MCU_TARGET = atmega2560
+atmega2560_w5100: TARGET = atmega2560_w5100
+atmega2560_w5100: MCU_TARGET = atmega2560
+atmega2560_w5100: CFLAGS += '-DBAUD_RATE=115200' -'DW5100'
+atmega2560_w5100: AVR_FREQ = 16000000L
+atmega2560_w5100: LDSECTIONS  = -Wl,--section-start=.text=0x3e000
+atmega2560_w5100: $(PROGRAM)_atmega2560_w5100.hex
+atmega2560_w5100: $(PROGRAM)_atmega2560_w5100.lst
+atmega2560_w5100_isp: atmega2560_w5100
+atmega2560_w5100_isp: TARGET = atmega2560_w5100
+atmega2560_w5100_isp: MCU_TARGET = atmega2560
 # Low power xtal (16MHz) 16KCK/14CK+65ms
-atmega2560_isp: LFUSE = FF
+atmega2560_w5100_isp: LFUSE = FF
 # 4069 byte boot
-atmega2560_isp: HFUSE = D8
+atmega2560_w5100_isp: HFUSE = D8
 # 2.7V brownout
-atmega2560_isp: EFUSE = FD
-atmega2560_isp: isp
+atmega2560_w5100_isp: EFUSE = FD
+atmega2560_w5100_isp: isp
+#
+# Mega has a minimum boot size of 1024 bytes
+atmega2560_w5200: TARGET = atmega2560_w5200
+atmega2560_w5200: MCU_TARGET = atmega2560
+atmega2560_w5200: CFLAGS += '-DBAUD_RATE=115200' '-DW5200'
+atmega2560_w5200: AVR_FREQ = 16000000L
+atmega2560_w5200: LDSECTIONS  = -Wl,--section-start=.text=0x3e000
+atmega2560_w5200: $(PROGRAM)_atmega2560_w5200.hex
+atmega2560_w5200: $(PROGRAM)_atmega2560_w5200.lst
+atmega2560_w5200_isp: atmega2560_w5200
+atmega2560_w5200_isp: TARGET = atmega2560_w5200
+atmega2560_w5200_isp: MCU_TARGET = atmega2560
+# Low power xtal (16MHz) 16KCK/14CK+65ms
+atmega2560_w5200_isp: LFUSE = FF
+# 4069 byte boot
+atmega2560_w5200_isp: HFUSE = D8
+# 2.7V brownout
+atmega2560_w5200_isp: EFUSE = FD
+atmega2560_w5200_isp: isp
+#
+# Mega has a minimum boot size of 1024 bytes
+atmega2560_w5500: TARGET = atmega2560_w5500
+atmega2560_w5500: MCU_TARGET = atmega2560
+atmega2560_w5500: CFLAGS += '-DBAUD_RATE=115200' '-DW5500'
+atmega2560_w5500: AVR_FREQ = 16000000L
+atmega2560_w5500: LDSECTIONS  = -Wl,--section-start=.text=0x3e000
+atmega2560_w5500: $(PROGRAM)_atmega2560_w5500.hex
+atmega2560_w5500: $(PROGRAM)_atmega2560_w5500.lst
+atmega2560_w5500_isp: atmega2560_w5500
+atmega2560_w5500_isp: TARGET = atmega2560_w5500
+atmega2560_w5500_isp: MCU_TARGET = atmega2560
+# Low power xtal (16MHz) 16KCK/14CK+65ms
+atmega2560_w5500_isp: LFUSE = FF
+# 4069 byte boot
+atmega2560_w5500_isp: HFUSE = D8
+# 2.7V brownout
+atmega2560_w5500_isp: EFUSE = FD
+atmega2560_w5500_isp: isp
 #
 #
 # # ATmega8
