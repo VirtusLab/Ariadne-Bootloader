@@ -634,7 +634,25 @@ atmega2560_w5500_isp: isp
 # luminet_isp: EFUSE = FE
 # luminet_isp: isp
 
-
+# Atmega32u4 used on Arduino Leonardo Ethernet
+atmega32u4_w5500: EXT_OBJ = optiboot.o
+atmega32u4_w5500: TARGET = atmega32u4_w5500
+atmega32u4_w5500: MCU_TARGET = atmega32u4
+atmega32u4_w5500: CFLAGS += '-DBAUD_RATE=115200' '-DW5500'
+atmega32u4_w5500: AVR_FREQ = 16000000L
+atmega32u4_w5500: LDSECTIONS  = -Wl,--section-start=.text=0x7000 #-Wl,--section-start=.version=0x7ffe
+atmega32u4_w5500: $(PROGRAM)_atmega32u4_w5500.hex
+atmega32u4_w5500: $(PROGRAM)_atmega32u4_w5500.lst
+atmega32u4_w5500_isp: atmega32u4_w5500
+atmega32u4_w5500_isp: TARGET = atmega32u4_w5500
+atmega32u4_w5500_isp: MCU_TARGET = atmega32u4
+# Low power xtal (16MHz) 16KCK/14CK+65ms
+atmega32u4_w5500_isp: LFUSE = FF
+# 4096 byte boot, SPIEN
+atmega32u4_w5500_isp: HFUSE = D8
+# 2.6V brownout
+atmega32u4_w5500_isp: EFUSE = 03
+atmega32u4_w5500_isp: isp
 
 #
 # Generic build instructions

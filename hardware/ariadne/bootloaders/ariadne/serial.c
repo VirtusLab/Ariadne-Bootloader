@@ -15,7 +15,8 @@
 #include "serial.h"
 #include "watchdog.h"
 #include "util.h"
-#if defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega1284P__)
+#if defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega1284P__) \
+|| defined(__AVR_ATmega32U4__)
 	#include "optiboot.h"
 #elif defined(__AVR_ATmega2560__)
 	#include "stk500boot.h"
@@ -29,7 +30,7 @@ void serialInit(void)
 {
 	// Double speed mode USART0
 	UART_STATUS_REG		= _BV(UART_DOUBLE_SPEED);
-	// Enable receiver and transiter on USART0
+	// Enable receiver and transmitter on USART0
 	UART_CONTROL_REG	= _BV(UART_ENABLE_RECEIVER) | _BV(UART_ENABLE_TRANSMITTER);
 	// Set 8bit character length on USART0
 	UART_MODE_REG		= _BV(UART_CHAR_SIZE_LOW) | _BV(UART_CHAR_SIZE_MID);
